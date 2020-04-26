@@ -30,6 +30,10 @@
     ],
     "rules": {
         "prettier/prettier": "error",
+        "react/jsx-indent-props": [
+            "error",
+            4
+        ],
         "react/jsx-indent": [
             "error",
             4
@@ -55,6 +59,12 @@
             {
                 "ts": "never",
                 "tsx": "never"
+            }
+        ],
+        "@typescript-eslint/explicit-function-return-type": [
+            "error",
+            {
+                "allowExpressions": true
             }
         ]
     },

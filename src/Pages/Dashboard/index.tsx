@@ -1,34 +1,84 @@
-import React from 'react';
+import React, { useState, FormEvent } from 'react';
 import { FiChevronRight } from 'react-icons/fi';
+import api from '../../services/api';
 
 import logoImg from '../../assets/github-logo.svg';
 
-import { Title, Form, Repositories } from './styles';
+import { Title, Form, Repositories, Error } from './styles';
+
+interface Repository {
+    full_name: string;
+    description: string;
+    owner: {
+        login: string;
+        avatar_url: string;
+    };
+}
 
 const Dashboard: React.FC = () => {
+    const [repositories, setRepositories] = useState<Repository[]>([]);
+    const [inputError, setInputError] = useState('');
+    const [newRepository, setNewRepository] = useState('');
+
+    async function handleAddRepository(
+        event: FormEvent<HTMLFormElement>,
+    ): Promise<void> {
+        event.preventDefault();
+
+        if (!newRepository || !newRepository.includes('/')) {
+            setInputError('Digite um repositório válido.');
+
+            return;
+        }
+
+        try {
+            const { data: repository } = await api.get<Repository>(
+                `/repos/${newRepository}`,
+            );
+
+            setRepositories([...repositories, repository]);
+            setNewRepository('');
+            setInputError('');
+        } catch (err) {
+            setInputError(`Erro ao buscar ${newRepository}.`);
+        }
+    }
+
     return (
         <>
             <img src={logoImg} alt="Github explorer" />
             <Title>Explore repositórios no Github</Title>
 
-            <Form>
-                <input placeholder="Digite o nome do repositório" />
+            <Form hasError={!!inputError} onSubmit={handleAddRepository}>
+                <input
+                    placeholder="Digite o nome do repositório"
+                    value={newRepository}
+                    onChange={(e) => setNewRepository(e.target.value)}
+                />
                 <button type="submit">Pesquisar</button>
             </Form>
 
-            <Repositories>
-                <a href="test">
-                    <img
-                        src="https://avatars3.githubusercontent.com/u/19610095?s=460&u=871596faa48f02d9b589d1e072d6dca9f7dc265c&v=4"
-                        alt="maicon silva"
-                    />
-                    <div>
-                        <strong>Maicon Silva</strong>
-                        <p>subtitle</p>
-                    </div>
+            {inputError && <Error>{inputError}</Error>}
 
-                    <FiChevronRight size={20} />
-                </a>
+            <Repositories>
+                {repositories.map((repository) => (
+                    <a
+                        key={repository.full_name}
+                        href={`https://github.com/${repository.full_name}`}
+                        target="blank"
+                    >
+                        <img
+                            src={repository.owner.avatar_url}
+                            alt="maicon silva"
+                        />
+                        <div>
+                            <strong>{repository.owner.login}</strong>
+                            <p>{repository.description}</p>
+                        </div>
+
+                        <FiChevronRight size={20} />
+                    </a>
+                ))}
             </Repositories>
         </>
     );
