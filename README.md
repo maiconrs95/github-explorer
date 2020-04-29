@@ -1,6 +1,8 @@
-## Available Scripts
+## Github explorer
 
-In the project directory, you can run:
+:walking: A simple React + TypeScript + Localstorage + Github API  web application
+
+## Getting Started
 
 ### `yarn start`
 
@@ -20,12 +22,12 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### App Pages
+## App Pages
 
-#### Dashboard
+### Dashboard
 ![Dashboard](.github/dashboard.jpeg)
 
-#### Repository
+### Repository
 ![Repository](.github/repository.jpeg)
 
 ## Learn More
